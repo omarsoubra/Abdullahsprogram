@@ -1474,6 +1474,19 @@ const phases = {
           { name: "Plank Hold", sets: "3", reps: "30 sec", weight: "BW", rest: "60s", rpe: "6" },
         ]
       },
+      {
+        label: "Day 5 — Arms + Core Finisher (OPTIONAL)",
+        badge: "ARMS + CORE",
+        exercises: [
+          { name: "DB Bicep Curl", sets: "3", reps: "12", weight: "5kg ea", rest: "60s", rpe: "7" },
+          { name: "DB Hammer Curl", sets: "3", reps: "12", weight: "5kg ea", rest: "60s", rpe: "7" },
+          { name: "Cable Tricep Pushdown", sets: "3", reps: "12", weight: "12.5kg", rest: "60s", rpe: "7" },
+          { name: "Overhead Tricep Extension (DB)", sets: "3", reps: "12", weight: "5kg", rest: "60s", rpe: "7" },
+          { name: "Face Pulls (Cable)", sets: "2", reps: "15", weight: "10kg", rest: "45s", rpe: "6" },
+          { name: "Plank Hold", sets: "3", reps: "45 sec", weight: "BW", rest: "60s", rpe: "7" },
+          { name: "Reverse Crunch", sets: "3", reps: "12", weight: "BW", rest: "45s", rpe: "6" },
+        ]
+      },
     ],
     progression: [
       ["Exercise", "Week 1", "Week 2", "Week 3", "Week 4"],
@@ -1543,6 +1556,19 @@ const phases = {
           { name: "Plank Hold", sets: "3", reps: "45 sec", weight: "BW", rest: "60s", rpe: "7" },
         ]
       },
+      {
+        label: "Day 5 — Arms + Core Finisher (OPTIONAL)",
+        badge: "ARMS + CORE",
+        exercises: [
+          { name: "DB Bicep Curl", sets: "3", reps: "10", weight: "5kg ea", rest: "60s", rpe: "8" },
+          { name: "DB Hammer Curl", sets: "3", reps: "10", weight: "5kg ea", rest: "60s", rpe: "8" },
+          { name: "Cable Tricep Pushdown", sets: "3", reps: "10", weight: "15kg", rest: "60s", rpe: "8" },
+          { name: "Overhead Tricep Extension (DB)", sets: "3", reps: "10", weight: "7.5kg", rest: "60s", rpe: "8" },
+          { name: "Face Pulls (Cable)", sets: "3", reps: "15", weight: "12.5kg", rest: "45s", rpe: "7" },
+          { name: "Plank Hold", sets: "3", reps: "60 sec", weight: "BW", rest: "60s", rpe: "7" },
+          { name: "Reverse Crunch", sets: "3", reps: "15", weight: "BW", rest: "45s", rpe: "7" },
+        ]
+      },
     ],
     progression: [
       ["Exercise", "Week 5", "Week 6", "Week 7", "Week 8"],
@@ -1610,6 +1636,19 @@ const phases = {
           { name: "Lying Leg Curl", sets: "3", reps: "8", weight: "20kg", rest: "60s", rpe: "8" },
           { name: "Seated Calf Raise", sets: "3", reps: "8", weight: "27.5kg", rest: "60s", rpe: "8" },
           { name: "Plank Hold", sets: "3", reps: "60 sec", weight: "BW", rest: "60s", rpe: "8" },
+        ]
+      },
+      {
+        label: "Day 5 — Arms + Core Finisher (OPTIONAL)",
+        badge: "ARMS + CORE",
+        exercises: [
+          { name: "DB Bicep Curl", sets: "4", reps: "8", weight: "7.5kg ea", rest: "60s", rpe: "8–9" },
+          { name: "DB Hammer Curl", sets: "3", reps: "8", weight: "7.5kg ea", rest: "60s", rpe: "8" },
+          { name: "Cable Tricep Pushdown", sets: "3", reps: "8", weight: "20kg", rest: "60s", rpe: "8" },
+          { name: "Overhead Tricep Extension (DB)", sets: "3", reps: "8", weight: "10kg", rest: "60s", rpe: "8" },
+          { name: "Face Pulls (Cable)", sets: "3", reps: "12", weight: "12.5kg", rest: "45s", rpe: "8" },
+          { name: "Plank Hold", sets: "3", reps: "60 sec", weight: "BW + 5kg plate", rest: "60s", rpe: "8" },
+          { name: "Reverse Crunch", sets: "3", reps: "15", weight: "BW", rest: "45s", rpe: "8" },
         ]
       },
     ],
@@ -3195,7 +3234,7 @@ const phaseTargets = {
 };
 
 const DAY_NAMES=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-const DAY_TYPES=['Gym (Push)','Football','Gym (Quad)','Football','Gym (Pull)','Gym (Posterior)','Match / Rest'];
+const DAY_TYPES=['Gym (Push)','Football','Gym (Quad)','Football','Gym (Pull)','Gym (Posterior)','Gym (Arms) / Match'];
 
 const mealPlan = {};
 function mkday(meals){return{meals};}
@@ -3253,8 +3292,7 @@ function showNutritionLock(n){
 
 function submitNutritionCode(n){
   const input=document.getElementById('nutr-unlock-input').value.trim().toUpperCase();
-  const timerReady=isTimerUnlocked(n);
-  if(!timerReady){document.getElementById('nutr-unlock-error').textContent='Timer not reached yet — keep grinding!';document.getElementById('nutr-unlock-error').style.display='block';return;}
+  // Timer gate removed — code alone unlocks. Trainer can advance clients when ready.
   if(input===CODES[n]){setUnlocked(n);document.getElementById('tab-phase-'+n).textContent='Phase '+n+' — '+phases[n].label+' ✓';setNutritionPhase(n);}
   else{document.getElementById('nutr-unlock-error').style.display='block';document.getElementById('nutr-unlock-input').value='';}
 }
@@ -3459,24 +3497,16 @@ function tryUnlock(phase) {
   if (unlocked.includes(phase)) { setPhase(phase); return; }
 
   attemptingPhase = phase;
-  const timerReady = isTimerUnlocked(phase);
-  const daysLeft = getDaysRemaining(phase);
 
   document.getElementById('lock-title').textContent = `Phase ${phase} — ${phases[phase].label} 🔒`;
   document.getElementById('unlock-error').style.display = 'none';
   document.getElementById('unlock-input').value = '';
 
+  // Timer gate removed — always show as unlockable via code
   const countdownEl = document.getElementById('lock-countdown');
   const countdownWrap = countdownEl.parentElement;
-
-  if (timerReady) {
-    document.getElementById('lock-desc').textContent = `You've completed ${TIMER_DAYS[phase]} days — the timer has unlocked. Enter the code from your trainer to access Phase ${phase}.`;
-    countdownWrap.style.display = 'none';
-  } else {
-    document.getElementById('lock-desc').textContent = `Phase ${phase} unlocks after ${TIMER_DAYS[phase]} days AND requires a code from your trainer. Keep grinding Phase ${phase - 1}.`;
-    countdownWrap.style.display = 'block';
-    countdownEl.textContent = `${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`;
-  }
+  document.getElementById('lock-desc').textContent = `Enter the unlock code from your trainer to access Phase ${phase}.`;
+  countdownWrap.style.display = 'none';
 
   // Hide workout, show lock
   document.getElementById('phase-info').style.display = 'none';
@@ -3491,13 +3521,9 @@ function tryUnlock(phase) {
 
 function submitCode() {
   const input = document.getElementById('unlock-input').value.trim().toUpperCase();
-  const timerReady = isTimerUnlocked(attemptingPhase);
-
-  if (!timerReady) {
-    document.getElementById('unlock-error').textContent = `Timer hasn't reached ${TIMER_DAYS[attemptingPhase]} days yet. Keep grinding!`;
-    document.getElementById('unlock-error').style.display = 'block';
-    return;
-  }
+  // Timer gate removed — code alone unlocks the phase. Clients advance when
+  // ready, not when a timer says so. Trainer override (OMARTRAINS) still
+  // unlocks both phases at once as before.
 
   if (input === CODES[attemptingPhase]) {
     setUnlocked(attemptingPhase);
